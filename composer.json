@@ -6,5 +6,7 @@
             "email": "iamgayan@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php-di/php-di": "^6.3"
+    }
 }
