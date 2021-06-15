@@ -1,11 +1,12 @@
 <?php
 
+use App\Controller\HomeController;
 use FastRoute\RouteCollector;
 
 $container = require __DIR__ . '/../app/bootstrap.php';
 
-$dispatcher = FastRoute\simpleDispatcher(function (RouteCollector $route) {
-
+$dispatcher = FastRoute\simpleDispatcher(function (RouteCollector $routeCollector) {
+    $routeCollector->addRoute('GET', '/', HomeController::class);
 });
 
 $route = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
