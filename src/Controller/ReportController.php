@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Exception\NotFoundHttpException;
 use App\Repository\Contract\GMVRepositoryInterface;
+use App\Util\CSVWriter;
 use Carbon\Carbon;
+use Doctrine\DBAL\Driver\Exception;
+use InvalidArgumentException;
+use League\Csv\CannotInsertRecord;
 use League\Csv\Writer;
 use Psr\Container\ContainerInterface;
-use Twig\Environment;
 
-class ReportController
+final class ReportController
 {
     private GMVRepositoryInterface $gmvRepository;
     private ContainerInterface $container;
@@ -25,10 +29,40 @@ class ReportController
         $endDate = Carbon::parse($startDate)->addDays(6)->toDateString();
         $vat = .21;
 
-        $data = $this->gmvRepository->getSevenDayTurnoverPerBrand($startDate, $endDate, $vat); // TODO@Gayan: VO?
+        try {
+            $data = $this->gmvRepository->getSevenDayTurnoverPerBrand($startDate, $endDate, $vat); // TODO@Gayan: VO?
+        } catch (NotFoundHttpException $e) {
+            // TODO@Gayan:
+            throw $e;
+        } catch (\Doctrine\DBAL\Exception | Exception $e) {
+            // TODO@Gayan:
+            throw $e;
+        }
 
-        $writer = Writer::createFromPath($this->container->get('report_store') . '/file.csv', 'w+');
-        $writer->insertOne(['Day', 'Brand Name', 'Turnover Excluding Vat']);
+        $headers = ['Day', 'Brand Name', 'Turnover Excluding Vat'];
+        $fileName = '7 days turnover per brand';
+
+        try {
+            (new CSVWriter($data, $fileName, $headers))->write();
+        } catch (InvalidArgumentException $e) {
+            // TODO@Gayan:
+            throw $e;
+        } catch (CannotInsertRecord $e) {
+            // TODO@Gayan:
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $data
+     * @param string $fileName
+     * @param array $headers
+     * @throws \League\Csv\CannotInsertRecord
+     */
+    private function csvWriter(array $data, string $fileName, array $headers): void
+    {
+        $writer = Writer::createFromPath($this->container->get('report_store') . '/' . $fileName . '', 'w+');
+        $writer->insertOne($headers);
         $writer->insertAll($data);
     }
 }
