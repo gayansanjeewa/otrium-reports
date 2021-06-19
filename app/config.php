@@ -1,5 +1,7 @@
 <?php
 
+use App\Repository\GMVRepository;
+use App\Repository\Contract\GMVRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Psr\Container\ContainerInterface;
@@ -8,19 +10,17 @@ use Twig\Loader\FilesystemLoader;
 
 return [
     'connection' => [
-        'url' => sprintf(
-            'mysql://%s:%s@%s:%s/%s',
-            DI\env('MYSQL_USER'),
-            DI\env('MYSQL_PASSWORD'),
-            DI\env('DATABASE_HOST'),
-            DI\env('DATABASE_PORT'),
-            DI\env('DATABASE_NAME')
-        )
+        'dbname' => 'otrium',
+        'user' => 'otrium',
+        'password' => 'otrium',
+        'host' => 'db',
+        'driver' => 'pdo_mysql',
     ],
+    'report_store' => __DIR__ . '/../var/reports',
 
     // Twig
     Environment::class => function () {
-        $loader = new FilesystemLoader(__DIR__ . '/src/Views');
+        $loader = new FilesystemLoader(__DIR__ . '/../src/Views');
         return new Environment($loader, [
             'debug' => true,
         ]);
@@ -28,6 +28,10 @@ return [
 
     // Database
     Connection::class => function (ContainerInterface $c) {
-        return DriverManager::getConnection($c->get('connection.url'));
+        return DriverManager::getConnection($c->get('connection'));
     },
+
+    // Bind an interface to an implementation
+    GMVRepositoryInterface::class => DI\autowire(GMVRepository::class),
+
 ];
