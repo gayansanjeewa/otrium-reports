@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Exception\NotFoundHttpException;
 use App\Repository\Contract\GMVRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use League\Csv\Writer;
@@ -59,7 +60,12 @@ class GMVRepository implements GMVRepositoryInterface
         $stmt->bindValue(':vat_deduction', 1- $vat);
 
         $resultSet = $stmt->executeQuery();
+        $data = $resultSet->fetchAllAssociative();
 
-        return $resultSet->fetchAllAssociative();
+        if (count($data) === 0) {
+            throw new NotFoundHttpException('No data found for given time period');
+        }
+
+        return $data;
     }
 }
