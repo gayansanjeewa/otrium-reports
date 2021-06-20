@@ -15,36 +15,38 @@ final class ReportController
         $this->reportingService = $reportingService;
     }
 
-    public function __invoke(array $params): string
+    public function __invoke(array $params)
     {
         $startDate = $params['startDate'];
         $errors = [];
         if (empty($startDate)) {
-            $errors['startDate'] = ['Start date is required.'];
+            $errors['startDate'] = 'Start date is required.';
         }
 
         if (!empty($errors)) {
             $data['success'] = false;
             $data['errors'] = $errors;
-            return json_encode($data);
+            echo json_encode($data);
+            return;
         }
 
         $duration = 6;
-        $result = [];
+        $reports = [];
 
         try {
-            $result[] = $this->reportingService->createTurnoverPerBrandReport($startDate, $duration);
-            $result[] = $this->reportingService->createTurnoverPerDayReport($startDate, $duration);
+            $reports['turnoverPerBrandReport'] = $this->reportingService->createTurnoverPerBrandReport($startDate, $duration);
+            $reports['turnoverPerDayReport'] = $this->reportingService->createTurnoverPerDayReport($startDate, $duration);
         } catch (NotFoundHttpException | Exception $e) {
             $data['success'] = false;
             $data['message'] = $e->getMessage();
-            return json_encode($data);
+            echo json_encode($data);
+            return;
         }
 
         $data['success'] = true;
         $data['message'] = 'Success!';
         $data['errors'] = [];
-        $data['data'] = $result;
-        return json_encode($data);
+        $data['reports'] = $reports;
+        echo json_encode($data);
     }
 }
