@@ -30,7 +30,8 @@ final class ReportController
         $vat = .21;
 
         try {
-            $data = $this->gmvRepository->getSevenDayTurnoverPerBrand($startDate, $endDate, $vat); // TODO@Gayan: VO?
+            $turnoverPerBrandData = $this->gmvRepository->getSevenDayTurnoverPerBrand($startDate, $endDate, $vat); // TODO@Gayan: VO?
+            $turnoverPerDay = $this->gmvRepository->getSevenDayTurnoverPerDay($startDate, $endDate, $vat); // TODO@Gayan: VO?
         } catch (NotFoundHttpException $e) {
             // TODO@Gayan:
             throw $e;
@@ -40,11 +41,9 @@ final class ReportController
         }
 
         try {
-            CSVWriter::configure(
-                $data,
-                $this->getFilePath('7-days-turnover-per-brand'),
-                ['Day', 'Brand Name', 'Turnover Excluding Vat']
-            )->write();
+            CSVWriter::configure($turnoverPerBrandData, $this->getFilePath('7-days-turnover-per-brand'), ['Day', 'Brand Name', 'Turnover Excluding Vat'])->write();
+
+            CSVWriter::configure($turnoverPerDay, $this->getFilePath('7-days-turnover-per-day'), ['Day', 'Brand Name', 'Turnover Excluding Vat'])->write();
         } catch (InvalidArgumentException $e) {
             // TODO@Gayan:
             throw $e;
