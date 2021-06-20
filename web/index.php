@@ -4,6 +4,7 @@ use App\Controller\HomeController;
 use App\Controller\ReportController;
 use DI\Container;
 use FastRoute\RouteCollector;
+use http\Client\Response;
 
 /** @var Container $container */
 $container = require __DIR__ . '/../app/bootstrap.php';
@@ -18,7 +19,8 @@ $route = $dispatcher->dispatch($httpMethod, $_SERVER['REQUEST_URI']);
 
 switch ($route[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        echo '404 Not Found';
+//        echo '404 Not Found';
+        return new Response();
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:

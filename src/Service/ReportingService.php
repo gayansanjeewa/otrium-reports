@@ -7,7 +7,8 @@ use App\Repository\Contract\GMVRepositoryInterface;
 use App\Service\Contract\ReportingServiceInterface;
 use App\Util\CSVWriter;
 use Carbon\Carbon;
-use Doctrine\DBAL\Driver\Exception;
+use Exception;
+use InvalidArgumentException;
 use League\Csv\CannotInsertRecord;
 use Psr\Container\ContainerInterface;
 
@@ -22,72 +23,78 @@ class ReportingService implements ReportingServiceInterface
         $this->container = $container;
     }
 
-    public function createTurnoverPerBrandReport(string $startDate, int $duration)
+
+    /**
+     * @inheritdoc
+     */
+    public function createTurnoverPerBrandReport(string $startDate, int $duration): string
     {
         try {
             $data = $this->gmvRepository->getSevenDayTurnoverPerBrand(
                 $startDate,
                 $this->getEndDateByDuration($startDate, $duration),
                 $this->container->get('vat_percentage')
-            ); // TODO@Gayan: VO?
-        } catch (NotFoundHttpException $e) {
-            // TODO@Gayan:
-            throw $e;
-        } catch (\Doctrine\DBAL\Exception | Exception $e) {
-            // TODO@Gayan:
-            throw $e;
+            );
+        } catch (\Doctrine\DBAL\Driver\Exception | \Doctrine\DBAL\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
 
         try {
-            CSVWriter::configure($data, $this->getFilePath('7-days-turnover-per-brand'), ['Day', 'Brand Name', 'Turnover Excluding Vat'])->write();
-        } catch (InvalidArgumentException $e) {
-            // TODO@Gayan:
-            throw $e;
+            CSVWriter::configure(
+                $data,
+                $this->getFilePath('7-days-turnover-per-brand'),
+                ['Day', 'Brand Name', 'Turnover Excluding Vat']
+            )->write();
         } catch (CannotInsertRecord $e) {
-            // TODO@Gayan:
-            throw $e;
+            throw new \Exception($e->getMessage());
         }
+
+        return $this->getFilePath('7-days-turnover-per-brand');
     }
 
-    public function createTurnoverPerDayReport(string $startDate, int $duration)
+    /**
+     * @inheritdoc
+     */
+    public function createTurnoverPerDayReport(string $startDate, int $duration): string
     {
         try {
             $data = $this->gmvRepository->getSevenDayTurnoverPerDay(
                 $startDate,
                 $this->getEndDateByDuration($startDate, $duration),
                 $this->getVatPercentage()
-            ); // TODO@Gayan: VO?
-        } catch (NotFoundHttpException $e) {
-            // TODO@Gayan:
-            throw $e;
-        } catch (\Doctrine\DBAL\Exception | Exception $e) {
-            // TODO@Gayan:
-            throw $e;
+            );
+        } catch (\Doctrine\DBAL\Driver\Exception | \Doctrine\DBAL\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
 
         try {
-            CSVWriter::configure($data, $this->getFilePath('7-days-turnover-per-day'), ['Day', 'Brand Name', 'Turnover Excluding Vat'])->write();
-        } catch (InvalidArgumentException $e) {
-            // TODO@Gayan:
-            throw $e;
+            CSVWriter::configure(
+                $data,
+                $this->getFilePath('7-days-turnover-per-day'),
+                ['Day', 'Brand Name', 'Turnover Excluding Vat']
+            )->write();
         } catch (CannotInsertRecord $e) {
-            // TODO@Gayan:
-            throw $e;
+            throw new \Exception($e->getMessage());
         }
+
+        return $this->getFilePath('7-days-turnover-per-day');
     }
 
+    /**
+     * @param string $fileName
+     * @return string
+     */
     private function getFilePath(string $fileName): string
     {
         return $this->container->get('report_store') . '/' . $fileName . '.csv';
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    private function getVatPercentage(): mixed
+    private function getVatPercentage(): float
     {
-        $vat = $this->container->get('vat_percentage');
-        return $vat;
+        return $this->container->get('vat_percentage');
     }
 
     /**
@@ -97,7 +104,6 @@ class ReportingService implements ReportingServiceInterface
      */
     private function getEndDateByDuration(string $startDate, int $duration): string
     {
-        $endDate = Carbon::parse($startDate)->addDays($duration)->toDateString();
-        return $endDate;
+        return Carbon::parse($startDate)->addDays($duration)->toDateString();
     }
 }

@@ -19,8 +19,7 @@ class GMVRepository implements GMVRepositoryInterface
     }
 
     /**
-     * @throws Exception
-     * @throws DBALDriverException
+     * @inheritdoc
      */
     public function getSevenDayTurnoverPerBrand(string $startDate, string $endDate, float $vat): array
     {
@@ -42,8 +41,7 @@ class GMVRepository implements GMVRepositoryInterface
     }
 
     /**
-     * @throws Exception
-     * @throws DBALDriverException
+     * @inheritdoc
      */
     public function getSevenDayTurnoverPerDay(string $startDate, string $endDate, float $vat): array
     {
@@ -63,7 +61,6 @@ class GMVRepository implements GMVRepositoryInterface
 
         return $this->findOrFail($stmt);
     }
-
 
     /**
      * @param Statement $stmt

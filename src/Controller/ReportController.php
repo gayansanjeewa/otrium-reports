@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Exception\NotFoundHttpException;
-use App\Exception\UnprocessableEntityHttpException;
 use App\Service\Contract\ReportingServiceInterface;
-use Doctrine\DBAL\Driver\Exception;
+use Exception;
 
 final class ReportController
 {
@@ -16,23 +15,36 @@ final class ReportController
         $this->reportingService = $reportingService;
     }
 
-    public function __invoke($params)
+    public function __invoke(array $params): string
     {
         $startDate = $params['startDate'];
+        $errors = [];
         if (empty($startDate)) {
-            throw new UnprocessableEntityHttpException('Start date is required.');
+            $errors['startDate'] = ['Start date is required.'];
+        }
+
+        if (!empty($errors)) {
+            $data['success'] = false;
+            $data['errors'] = $errors;
+            return json_encode($data);
         }
 
         $duration = 6;
+        $result = [];
 
         try {
-            $this->reportingService->createTurnoverPerBrandReport($startDate, $duration);
-            $this->reportingService->createTurnoverPerDayReport($startDate, $duration);
-        } catch ( NotFoundHttpException $e) {
-            throw $e;
-        } catch ( Exception $e) {
-            // TODO@Gayan:
-            throw $e;
+            $result[] = $this->reportingService->createTurnoverPerBrandReport($startDate, $duration);
+            $result[] = $this->reportingService->createTurnoverPerDayReport($startDate, $duration);
+        } catch (NotFoundHttpException | Exception $e) {
+            $data['success'] = false;
+            $data['message'] = $e->getMessage();
+            return json_encode($data);
         }
+
+        $data['success'] = true;
+        $data['message'] = 'Success!';
+        $data['errors'] = [];
+        $data['data'] = $result;
+        return json_encode($data);
     }
 }
