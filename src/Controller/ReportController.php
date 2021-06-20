@@ -39,11 +39,12 @@ final class ReportController
             throw $e;
         }
 
-        $headers = ['Day', 'Brand Name', 'Turnover Excluding Vat'];
-        $fileName = '7 days turnover per brand';
-
         try {
-            (new CSVWriter($data, $fileName, $headers))->write();
+            CSVWriter::configure(
+                $data,
+                $this->getFilePath('7-days-turnover-per-brand'),
+                ['Day', 'Brand Name', 'Turnover Excluding Vat']
+            )->write();
         } catch (InvalidArgumentException $e) {
             // TODO@Gayan:
             throw $e;
@@ -64,5 +65,10 @@ final class ReportController
         $writer = Writer::createFromPath($this->container->get('report_store') . '/' . $fileName . '', 'w+');
         $writer->insertOne($headers);
         $writer->insertAll($data);
+    }
+
+    private function getFilePath(string $fileName): string
+    {
+        return $this->container->get('report_store') . '/' . $fileName . '.csv';
     }
 }
