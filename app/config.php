@@ -17,6 +17,7 @@ return [
         'driver' => 'pdo_mysql',
     ],
     'report_store' => __DIR__ . '/../var/reports',
+    'vat_percentage' => .21,
 
     // Twig
     Environment::class => function () {
