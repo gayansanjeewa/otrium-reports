@@ -7,7 +7,6 @@
     <div class="wrapper">
 
 
-
         <div class="col-sm-12 col-sm-offset-6">
             <h1>Otrium Reports</h1>
             <p class="lead">Using this interface you'd be able to generate following reports</p>
@@ -18,7 +17,7 @@
 
             <p class="lead"> Please select a start date to proceed </p>
 
-            <form action="/reports" method="POST">
+            <form method="POST">
                 <div id="name-group" class="form-group">
                     <label for="startDate">Start Date:</label>
                     <input
@@ -27,7 +26,8 @@
                             id="startDate"
                             name="startDate"
                     />
-                    <small>(Psst! For this example please select 01-05-2018 so the report would generated for period of 01-05-2018 - 07-05-2018)</small>
+                    <small>(Psst! For this example please select 01-05-2018 so the report would generated for period of
+                        01-05-2018 - 07-05-2018)</small>
                 </div>
 
                 <button type="submit" class="btn btn-success">
@@ -43,6 +43,6 @@
 {% block javascript %}
 {{ parent() }}
 
-<script>
-</script>
+<script src="./assets/js/form.js"></script>
+
 {% endblock %}
