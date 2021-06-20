@@ -18,7 +18,7 @@ return [
         'host' => 'db',
         'driver' => 'pdo_mysql',
     ],
-    'report_store' => __DIR__ . '/../var/reports',
+    'report_store' => __DIR__ . '/../web/reports',
     'vat_percentage' => .21,
 
     // Twig

@@ -19,8 +19,7 @@ $route = $dispatcher->dispatch($httpMethod, $_SERVER['REQUEST_URI']);
 
 switch ($route[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-//        echo '404 Not Found';
-        return new Response();
+        echo '404 Not Found';
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:

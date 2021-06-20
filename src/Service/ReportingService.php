@@ -40,16 +40,17 @@ class ReportingService implements ReportingServiceInterface
         }
 
         try {
+            $fileName = '7-days-turnover-per-brand-'. $startDate . '.csv';
             CSVWriter::configure(
                 $data,
-                $this->getFilePath('7-days-turnover-per-brand'),
+                $this->getFilePath($fileName),
                 ['Day', 'Brand Name', 'Turnover Excluding Vat']
             )->write();
         } catch (CannotInsertRecord $e) {
             throw new \Exception($e->getMessage());
         }
 
-        return $this->getFilePath('7-days-turnover-per-brand');
+        return $fileName;
     }
 
     /**
@@ -68,16 +69,17 @@ class ReportingService implements ReportingServiceInterface
         }
 
         try {
+            $fileName = '7-days-turnover-per-day-'. $startDate . '.csv';
             CSVWriter::configure(
                 $data,
-                $this->getFilePath('7-days-turnover-per-day'),
+                $this->getFilePath($fileName),
                 ['Day', 'Brand Name', 'Turnover Excluding Vat']
             )->write();
         } catch (CannotInsertRecord $e) {
             throw new \Exception($e->getMessage());
         }
 
-        return $this->getFilePath('7-days-turnover-per-day');
+        return $fileName;
     }
 
     /**
@@ -86,7 +88,7 @@ class ReportingService implements ReportingServiceInterface
      */
     private function getFilePath(string $fileName): string
     {
-        return $this->container->get('report_store') . '/' . $fileName . '.csv';
+        return $this->container->get('report_store') . '/' . $fileName;
     }
 
     /**
