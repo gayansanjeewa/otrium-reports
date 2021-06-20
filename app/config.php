@@ -2,6 +2,8 @@
 
 use App\Repository\GMVRepository;
 use App\Repository\Contract\GMVRepositoryInterface;
+use App\Service\Contract\ReportingServiceInterface;
+use App\Service\ReportingService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Psr\Container\ContainerInterface;
@@ -34,5 +36,6 @@ return [
 
     // Bind an interface to an implementation
     GMVRepositoryInterface::class => DI\autowire(GMVRepository::class),
+    ReportingServiceInterface::class => DI\autowire(ReportingService::class),
 
 ];

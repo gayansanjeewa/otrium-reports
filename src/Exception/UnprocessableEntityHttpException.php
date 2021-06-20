@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Exception;
 
 /**
- * HTTP 404 Not Found exception class.
+ * HTTP 422 Unprocessable Entity exception class.
  */
-class NotFoundHttpException extends HttpException
+class UnprocessableEntityHttpException extends HttpException
 {
     /**
      * @param string|null     $message
@@ -21,10 +21,10 @@ class NotFoundHttpException extends HttpException
         \Throwable $previous = null
     ) {
         parent::__construct(
-            $message ?? 'Not Found',
+            $message ?? 'Unprocessable Entity',
             $description ?? '',
-            $code ?? StatusCodeInterface::STATUS_NOT_FOUND,
-            StatusCodeInterface::STATUS_NOT_FOUND,
+            $code ?? StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+            StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
             $previous
         );
     }
