@@ -9,22 +9,23 @@ use Webmozart\Assert\Assert;
 class CSVWriter
 {
     private array $data;
-    private string $fileName;
+    private string $filePath;
     private array $headers;
-    private \DI\Definition\Reference $outputPath;
 
-    public function __construct(array $data, string $fileName, array $headers)
+    private function __construct(array $data, string $filePath, array $headers)
+    {
+        $this->data = $data;
+        $this->filePath = $filePath;
+        $this->headers = $headers;
+    }
+
+    public static function configure(array $data, string $filePath, array $headers): CSVWriter
     {
         Assert::notEmpty($data);
-        Assert::notEmpty($fileName);
+        Assert::notEmpty($filePath);
         Assert::notEmpty($headers);
 
-        $this->outputPath = \DI\get('report_store');
-        Assert::notEmpty($this->outputPath);
-
-        $this->data = $data;
-        $this->fileName = $fileName;
-        $this->headers = $headers;
+        return new static($data, $filePath, $headers);
     }
 
     /**
@@ -32,7 +33,7 @@ class CSVWriter
      */
     public function write()
     {
-        $writer = Writer::createFromPath($this->outputPath . '/' . $this->fileName . '', 'w+');
+        $writer = Writer::createFromPath($this->filePath . '', 'w+');
         $writer->insertOne($this->headers);
         $writer->insertAll($this->data);
     }
