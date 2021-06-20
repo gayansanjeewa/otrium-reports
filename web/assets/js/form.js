@@ -45,7 +45,7 @@ $(document).ready(function () {
             }
 
             if (data.message) {
-                $('.show-alert').html(generateAlert(SUCCESS, data.message))
+                $('.show-alert').html(generateAlert(DANGER, data.message))
 
                 return;
             }
