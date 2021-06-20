@@ -24,7 +24,6 @@ class GMVRepository implements GMVRepositoryInterface
      */
     public function getSevenDayTurnoverPerBrand(string $startDate, string $endDate, float $vat): array
     {
-
         $sql = "
             select date as Day, b.name as 'Brand Name', sum(turnover * :vat_deduction) as 'Turnover Excluding Vat'
             from gmv
