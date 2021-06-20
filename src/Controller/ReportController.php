@@ -27,7 +27,7 @@ final class ReportController
     {
         $startDate = $params['startDate'];
         $endDate = Carbon::parse($startDate)->addDays(6)->toDateString();
-        $vat = .21;
+        $vat = $this->container->get('vat_percentage');
 
         try {
             $turnoverPerBrandData = $this->gmvRepository->getSevenDayTurnoverPerBrand($startDate, $endDate, $vat); // TODO@Gayan: VO?
