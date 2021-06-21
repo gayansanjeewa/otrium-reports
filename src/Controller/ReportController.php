@@ -4,11 +4,10 @@ namespace App\Controller;
 
 use App\Exception\NotFoundHttpException;
 use App\Service\Contract\ReportingServiceInterface;
-use EasyCSRF\EasyCSRF;
 use EasyCSRF\Exceptions\InvalidCsrfTokenException;
 use Exception;
 
-final class ReportController
+final class ReportController extends BaseController
 {
     private ReportingServiceInterface $reportingService;
 
@@ -19,13 +18,10 @@ final class ReportController
 
     public function __invoke(array $params)
     {
-        $sessionProvider = new \EasyCSRF\NativeSessionProvider();
-        $easyCSRF = new \EasyCSRF\EasyCSRF($sessionProvider);
 
-//        var_dump($params['csrfToken']);
         try {
-            $easyCSRF->check('csrf_token', $params['csrfToken']);
-        } catch(InvalidCsrfTokenException $e) {
+            $this->validateCSRFToken($params);
+        } catch (InvalidCsrfTokenException $e) {
             $data['success'] = false;
             $data['message'] = $e->getMessage();
             echo json_encode($data);
