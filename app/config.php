@@ -12,9 +12,9 @@ use Twig\Loader\FilesystemLoader;
 
 return [
     'connection' => [
-        'dbname' => 'otrium',
-        'user' => 'otrium',
-        'password' => 'otrium',
+        'dbname' => DI\env('DATABASE_NAME', 'otrium'),
+        'user' => DI\env('DATABASE_USER', 'otrium'),
+        'password' => DI\env('DATABASE_PASSWORD', 'otrium'),
         'host' => 'db',
         'driver' => 'pdo_mysql',
     ],
