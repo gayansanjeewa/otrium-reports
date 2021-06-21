@@ -7,7 +7,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-final class HomeController
+final class HomeController extends BaseController
 {
     private Environment $twig;
 
@@ -23,6 +23,8 @@ final class HomeController
      */
     public function __invoke()
     {
-        echo $this->twig->render('home.twig');
+        echo $this->twig->render('home.twig', [
+            'csrf_token'=> $this->getCSRFToken()
+        ]);
     }
 }
