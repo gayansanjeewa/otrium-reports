@@ -2,13 +2,10 @@
 
 namespace App\Service;
 
-use App\Exception\NotFoundHttpException;
 use App\Repository\Contract\GMVRepositoryInterface;
 use App\Service\Contract\ReportingServiceInterface;
 use App\Util\CSVWriter;
 use Carbon\Carbon;
-use Exception;
-use InvalidArgumentException;
 use League\Csv\CannotInsertRecord;
 use Psr\Container\ContainerInterface;
 
@@ -22,7 +19,6 @@ class ReportingService implements ReportingServiceInterface
         $this->gmvRepository = $gmvRepository;
         $this->container = $container;
     }
-
 
     /**
      * @inheritdoc
@@ -40,12 +36,8 @@ class ReportingService implements ReportingServiceInterface
         }
 
         try {
-            $fileName = '7-days-turnover-per-brand-'. $startDate . '.csv';
-            CSVWriter::configure(
-                $data,
-                $this->getFilePath($fileName),
-                ['Day', 'Brand Name', 'Turnover Excluding Vat']
-            )->write();
+            $fileName = '7-days-turnover-per-brand-' . $startDate . '.csv';
+            (new CSVWriter($data, $this->getFilePath($fileName), ['Day', 'Brand Name', 'Turnover Excluding Vat']))->write();
         } catch (CannotInsertRecord $e) {
             throw new \Exception($e->getMessage());
         }
@@ -69,12 +61,8 @@ class ReportingService implements ReportingServiceInterface
         }
 
         try {
-            $fileName = '7-days-turnover-per-day-'. $startDate . '.csv';
-            CSVWriter::configure(
-                $data,
-                $this->getFilePath($fileName),
-                ['Day', 'Turnover Excluding Vat']
-            )->write();
+            $fileName = '7-days-turnover-per-day-' . $startDate . '.csv';
+            (new CSVWriter($data, $this->getFilePath($fileName), ['Day', 'Turnover Excluding Vat']))->write();
         } catch (CannotInsertRecord $e) {
             throw new \Exception($e->getMessage());
         }
