@@ -1,6 +1,6 @@
 # Otrium Reports
 ## Setup
-- Create `.env` file and configure it correctly. Refer to below mentioned sample configuration.
+- Create `.env` file from `.env.example` and configure it correctly.
 ```shell
 DATABASE_NAME=otrium
 DATABASE_USER=otrium
