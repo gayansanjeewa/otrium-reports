@@ -73,7 +73,7 @@ class ReportingService implements ReportingServiceInterface
             CSVWriter::configure(
                 $data,
                 $this->getFilePath($fileName),
-                ['Day', 'Brand Name', 'Turnover Excluding Vat']
+                ['Day', 'Turnover Excluding Vat']
             )->write();
         } catch (CannotInsertRecord $e) {
             throw new \Exception($e->getMessage());

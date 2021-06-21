@@ -24,7 +24,7 @@ class GMVRepository implements GMVRepositoryInterface
     public function getSevenDayTurnoverPerBrand(string $startDate, string $endDate, float $vat): array
     {
         $sql = "
-            select date as Day, b.name as 'Brand Name', sum(turnover * :vat_deduction) as 'Turnover Excluding Vat'
+            select date as 'day', b.name as 'brand_name', sum(turnover * :vat_deduction) as 'turnover_excluding_vat'
             from gmv
             join brands b on b.id = gmv.brand_id
             where (date between :start and :end)
@@ -46,7 +46,7 @@ class GMVRepository implements GMVRepositoryInterface
     public function getSevenDayTurnoverPerDay(string $startDate, string $endDate, float $vat): array
     {
         $sql = "
-            select date, sum(turnover), sum(turnover * :vat_deduction) as turnover_excluding_vat
+            select date as 'day', sum(turnover * :vat_deduction) as 'turnover_excluding_vat'
             from gmv
                      join brands b on b.id = gmv.brand_id
             WHERE (date BETWEEN :start AND :end)

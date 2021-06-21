@@ -4,7 +4,6 @@ use App\Controller\HomeController;
 use App\Controller\ReportController;
 use DI\Container;
 use FastRoute\RouteCollector;
-use http\Client\Response;
 
 /** @var Container $container */
 $container = require __DIR__ . '/../app/bootstrap.php';
