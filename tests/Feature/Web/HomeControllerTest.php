@@ -11,6 +11,7 @@ class HomeControllerTest extends TestCase
     */
     public function invoke_shouldServeHomePage()
     {
+        self::markTestSkipped();
         // TODO@Gayan: todo
     }
 }

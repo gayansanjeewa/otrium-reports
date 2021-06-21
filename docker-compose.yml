@@ -31,7 +31,7 @@ services:
     container_name: otrium_nginx
     image: nginx:stable-alpine
     ports:
-      - '8070:80'
+      - "${HOST_PORT}:80"
     volumes:
       - ./:/var/www/
       - ./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
