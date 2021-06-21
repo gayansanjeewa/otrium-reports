@@ -6,6 +6,8 @@ use App\Service\Contract\ReportingServiceInterface;
 use App\Service\ReportingService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use EasyCSRF\EasyCSRF;
+use EasyCSRF\NativeSessionProvider;
 use Psr\Container\ContainerInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;

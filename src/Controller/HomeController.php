@@ -23,6 +23,19 @@ final class HomeController
      */
     public function __invoke()
     {
-        echo $this->twig->render('home.twig');
+        echo $this->twig->render('home.twig', [
+            'csrf_token'=> $this->getCSRFToken()
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    private function getCSRFToken(): string
+    {
+        $sessionProvider = new \EasyCSRF\NativeSessionProvider();
+        $easyCSRF = new \EasyCSRF\EasyCSRF($sessionProvider);
+
+        return $easyCSRF->generate('csrf_token');
     }
 }

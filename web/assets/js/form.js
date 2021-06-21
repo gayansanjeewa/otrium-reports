@@ -9,8 +9,10 @@ $(document).ready(function () {
         $('.turnover-per-brand-report a').remove()
         $('.turnover-per-day-report a').remove()
 
+        console.log($("#token").val())
         let formData = {
             startDate: $("#startDate").val(),
+            csrfToken: $("#token").val(),
         }
 
         function downloadableLink(reportName) {
