@@ -4,10 +4,9 @@ namespace App\Controller;
 
 use App\Exception\NotFoundHttpException;
 use App\Service\Contract\ReportingServiceInterface;
-use EasyCSRF\Exceptions\InvalidCsrfTokenException;
 use Exception;
 
-final class ReportController extends BaseController
+final class ReportController
 {
     private ReportingServiceInterface $reportingService;
 
@@ -18,16 +17,6 @@ final class ReportController extends BaseController
 
     public function __invoke(array $params)
     {
-
-        try {
-            $this->validateCSRFToken($params);
-        } catch (InvalidCsrfTokenException $e) {
-            $data['success'] = false;
-            $data['message'] = $e->getMessage();
-            echo json_encode($data);
-            return;
-        }
-
         $startDate = $params['startDate'];
         $errors = [];
         if (empty($startDate)) {
@@ -35,9 +24,7 @@ final class ReportController extends BaseController
         }
 
         if (!empty($errors)) {
-            $data['success'] = false;
-            $data['errors'] = $errors;
-            echo json_encode($data);
+            $this->fail('Validation fail!', $errors);
             return;
         }
 
@@ -48,16 +35,35 @@ final class ReportController extends BaseController
             $reports['turnoverPerBrandReport'] = $this->reportingService->createTurnoverPerBrandReport($startDate, $duration);
             $reports['turnoverPerDayReport'] = $this->reportingService->createTurnoverPerDayReport($startDate, $duration);
         } catch (NotFoundHttpException | Exception $e) {
-            $data['success'] = false;
-            $data['message'] = $e->getMessage();
-            echo json_encode($data);
+            $this->fail($e->getMessage());
             return;
         }
 
+        $this->success($reports);
+    }
+
+    /**
+     * @param string $message
+     * @param array $errors
+     */
+    private function fail(string $message, array $errors = []): void
+    {
+        $data['success'] = false;
+        $data['message'] = $message;
+        $data['errors'] = $errors;
+        echo json_encode($data);
+    }
+
+
+    /**
+     * @param $responseData
+     */
+    private function success($responseData): void
+    {
         $data['success'] = true;
         $data['message'] = 'Success!';
         $data['errors'] = [];
-        $data['reports'] = $reports;
+        $data['responseData'] = $responseData;
         echo json_encode($data);
     }
 }
