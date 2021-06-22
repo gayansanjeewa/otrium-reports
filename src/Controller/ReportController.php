@@ -35,9 +35,7 @@ final class ReportController extends BaseController
         }
 
         if (!empty($errors)) {
-            $data['success'] = false;
-            $data['errors'] = $errors;
-            echo json_encode($data);
+            $this->fail('Validation fail!', $errors);
             return;
         }
 
@@ -48,16 +46,35 @@ final class ReportController extends BaseController
             $reports['turnoverPerBrandReport'] = $this->reportingService->createTurnoverPerBrandReport($startDate, $duration);
             $reports['turnoverPerDayReport'] = $this->reportingService->createTurnoverPerDayReport($startDate, $duration);
         } catch (NotFoundHttpException | Exception $e) {
-            $data['success'] = false;
-            $data['message'] = $e->getMessage();
-            echo json_encode($data);
+            $this->fail($e->getMessage());
             return;
         }
 
+        $this->success($reports);
+    }
+
+    /**
+     * @param string $message
+     * @param array $errors
+     */
+    private function fail(string $message, array $errors = []): void
+    {
+        $data['success'] = false;
+        $data['message'] = $message;
+        $data['errors'] = $errors;
+        echo json_encode($data);
+    }
+
+
+    /**
+     * @param $responseData
+     */
+    private function success($responseData): void
+    {
         $data['success'] = true;
         $data['message'] = 'Success!';
         $data['errors'] = [];
-        $data['reports'] = $reports;
+        $data['responseData'] = $responseData;
         echo json_encode($data);
     }
 }

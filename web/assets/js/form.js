@@ -39,13 +39,13 @@ $(document).ready(function () {
             if (data.success) {
                 $('.show-alert').html(generateAlert(SUCCESS, 'Report created successfully.'))
 
-                $('.turnover-per-brand-report').append(downloadableLink(data.reports.turnoverPerBrandReport));
-                $('.turnover-per-day-report').append(downloadableLink(data.reports.turnoverPerDayReport));
+                $('.turnover-per-brand-report').append(downloadableLink(data.responseData.turnoverPerBrandReport));
+                $('.turnover-per-day-report').append(downloadableLink(data.responseData.turnoverPerDayReport));
 
                 return;
             }
 
-            if (data.message) {
+            if (data.message && data.errors.length === 0) {
                 $('.show-alert').html(generateAlert(DANGER, data.message))
 
                 return;
