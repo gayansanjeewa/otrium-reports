@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 use App\Controller\HomeController;
 use App\Controller\ReportController;

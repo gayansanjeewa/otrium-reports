@@ -11,7 +11,6 @@ $(document).ready(function () {
 
         let formData = {
             startDate: $("#startDate").val(),
-            csrfToken: $("#token").val(),
         }
 
         function downloadableLink(reportName) {
